@@ -1,6 +1,7 @@
 <?php
 namespace App\Livewire;
 
+use App\Events\MassageSend;
 use App\Models\ChatMassage;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -13,13 +14,14 @@ class Chat extends Component
     public $newMessage;
     public $messages;
     public $user = null;
-
+    public $loginID;
     public function mount()
     {
         $this->user         = User::where('id', Auth::id())->first();
         $this->users        = User::where('id', '!=', Auth::id())->get();
         $this->selectedUser = $this->users->first();
         $this->loadMessages();
+        $loginID = Auth::id();
 
     }
     private function loadMessages()
@@ -32,7 +34,7 @@ class Chat extends Component
             ->orWhere(function ($q) {
                 $q->where("sender_id", $this->selectedUser->id)
                     ->where("receiver_id", Auth::id());
-            })->latest()->get();
+            })->get();
     }
     public function selectUser($userId)
     {
@@ -56,7 +58,25 @@ class Chat extends Component
             "receiver_id" => $this->selectedUser->id,
             "message"     => $this->newMessage,
         ]);
+        broadcast(new MassageSend($massage));
         $this->messages->push($massage);
         $this->newMessage = '';
     }
+
+    public function getListeners()
+    {
+        return [
+            "echo-private:chat.($this->loginID}, MessageSent" => "newChatMessageNotification",
+        ];
+    }
+
+    public function newChatMessageNotification($message)
+    {
+        if ($message['sender_id'] == $this->selectedUser->id) {
+            $messageObj = ChatMassage::find($message['id']);
+            $this->messages->push($messageObj);
+
+        }
+    }
+
 }
