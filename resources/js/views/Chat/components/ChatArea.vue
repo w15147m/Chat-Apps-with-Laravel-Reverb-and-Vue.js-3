@@ -22,7 +22,7 @@
     <div v-for="message in messages" :key="message.id">
       <!-- Sent Messages (from current user) -->
       <div v-if="message.sender_id === user.id" class="flex justify-end">
-        <div class="max-w-xs px-4 py-2 rounded-2xl bg-gradient-to-r from-purple-500 to-violet-600 text-white shadow">
+        <div class="max-w-xs px-4 py-2 rounded-2xl bg-gradient-to-r from-purple-500 to-violet-600 text-white shadow break-words word-wrap">
           {{ message.message }}
           <div class="text-[10px] text-right opacity-70 mt-1">
             {{ message.created_at }}
@@ -40,7 +40,7 @@
         <div class="h-10 m-2 w-10 rounded-full bg-gradient-to-r from-purple-500 to-violet-500 flex items-center justify-center text-white font-semibold">
           {{ selectedUser?.name.substring(0, 2).toUpperCase() }}
         </div>
-        <div class="max-w-xs px-4 py-2 rounded-2xl bg-white text-gray-800 shadow border border-gray-200">
+        <div class="max-w-xs px-4 py-2 rounded-2xl bg-white text-gray-800 shadow border border-gray-200 break-words word-wrap">
           {{ message.message }}
           <div class="text-[10px] text-left text-gray-500 mt-1">
             {{ message.created_at }}
@@ -59,27 +59,32 @@ import { useChats } from '../composables/useChats';
 
 const { user, messages, users, selectedUser } = useChats();
 
+// Template refs
 const messagesContainer = ref(null);
 const scrollTarget = ref(null);
 
+// Function to scroll to bottom
 const scrollToBottom = () => {
   if (scrollTarget.value) {
     scrollTarget.value.scrollIntoView({ behavior: 'smooth' });
   }
 };
 
+// Watch for new messages and scroll to bottom
 watch(messages, () => {
   nextTick(() => {
     scrollToBottom();
   });
 }, { deep: true });
 
+// Watch for selected user change and scroll to bottom
 watch(selectedUser, () => {
   nextTick(() => {
     scrollToBottom();
   });
 });
 
+// Scroll to bottom on component mount
 onMounted(() => {
   nextTick(() => {
     scrollToBottom();
