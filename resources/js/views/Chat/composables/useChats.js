@@ -4,7 +4,6 @@ import { funcApi } from "@/common/services/api.service";
 
 const { user } = useUtils();
 
-// Start with empty array since you're loading from API
 const users = ref([]);
 const newMessage = ref("");
 const messages = ref([]);
@@ -12,11 +11,14 @@ const selectedUser = ref(null);
 
 export function useChats() {
     const sendMessage = async () => {
+        if(!newMessage.value) return
         try {
             let response = await funcApi.post(
                 `/api/chat/${selectedUser.value.id}`,
                  { chat: newMessage.value }
             );
+            messages.value.push(response.data);
+            newMessage.value = '';
         } catch (error) {
             console.error("Error loading users:", error);
         }

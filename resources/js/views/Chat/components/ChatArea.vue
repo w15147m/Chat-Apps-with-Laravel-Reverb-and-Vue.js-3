@@ -1,4 +1,4 @@
-<!-- ChatArea.vue - FIXED -->
+<!-- ChatArea.vue - WITH AUTO-SCROLL -->
 <template>
   <!-- Chat Header -->
   <div class="flex items-center justify-between p-4 border-b bg-white border-gray-200">
@@ -14,7 +14,11 @@
   </div>
 
   <!-- Messages Area -->
-  <div class="flex-1 p-4 overflow-y-auto space-y-4 bg-gray-50">
+  <div
+    ref="messagesContainer"
+    class="flex-1 p-4 overflow-y-auto space-y-4 bg-gray-50"
+    style="scroll-behavior: smooth;"
+  >
     <div v-for="message in messages" :key="message.id">
       <!-- Sent Messages (from current user) -->
       <div v-if="message.sender_id === user.id" class="flex justify-end">
@@ -24,7 +28,7 @@
             {{ message.created_at }}
           </div>
         </div>
-        <!-- FIXED: Show current user's avatar for sent messages -->
+        <!-- Show current user's avatar for sent messages -->
         <div class="h-10 m-2 w-10 rounded-full bg-gradient-to-r from-purple-500 to-violet-500 flex items-center justify-center text-white font-semibold">
           {{ user.name.substring(0, 2).toUpperCase() }}
         </div>
@@ -32,7 +36,7 @@
 
       <!-- Received Messages (from selected user) -->
       <div v-else class="flex justify-start">
-        <!-- FIXED: Show selected user's avatar for received messages -->
+        <!-- Show selected user's avatar for received messages -->
         <div class="h-10 m-2 w-10 rounded-full bg-gradient-to-r from-purple-500 to-violet-500 flex items-center justify-center text-white font-semibold">
           {{ selectedUser?.name.substring(0, 2).toUpperCase() }}
         </div>
@@ -44,10 +48,41 @@
         </div>
       </div>
     </div>
+    <!-- Invisible element to scroll to -->
+    <div ref="scrollTarget"></div>
   </div>
 </template>
 
 <script setup>
+import { ref, nextTick, watch, onMounted } from 'vue';
 import { useChats } from '../composables/useChats';
+
 const { user, messages, users, selectedUser } = useChats();
+
+const messagesContainer = ref(null);
+const scrollTarget = ref(null);
+
+const scrollToBottom = () => {
+  if (scrollTarget.value) {
+    scrollTarget.value.scrollIntoView({ behavior: 'smooth' });
+  }
+};
+
+watch(messages, () => {
+  nextTick(() => {
+    scrollToBottom();
+  });
+}, { deep: true });
+
+watch(selectedUser, () => {
+  nextTick(() => {
+    scrollToBottom();
+  });
+});
+
+onMounted(() => {
+  nextTick(() => {
+    scrollToBottom();
+  });
+});
 </script>
