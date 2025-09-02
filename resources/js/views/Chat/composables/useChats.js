@@ -11,19 +11,20 @@ const selectedUser = ref(null);
 
 export function useChats() {
     const sendMessage = async () => {
-        if(!newMessage.value) return
+        if (!newMessage.value) return;
         try {
             let response = await funcApi.post(
                 `/api/chat/${selectedUser.value.id}`,
-                 { chat: newMessage.value }
+                { chat: newMessage.value }
             );
             messages.value.push(response.data);
-            newMessage.value = '';
+            newMessage.value = "";
         } catch (error) {
             console.error("Error loading users:", error);
         }
     };
     const getUsers = async () => {
+        chatListener();
         try {
             let response = await funcApi.fetchData("/api/users");
             users.value = response;
@@ -46,6 +47,17 @@ export function useChats() {
         }
     };
 
+    const chatListener = () => {
+        const userId = user.value.id;
+        if (userId) {
+            window.Echo.private(`chat.${userId}`).listen(
+                "MessageSent",
+                (data) => {
+                        messages.value.push(data);
+                }
+            );
+        }
+    };
     return {
         user,
         users,

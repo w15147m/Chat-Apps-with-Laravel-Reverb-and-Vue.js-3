@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Events\MessageSent;
 use App\Models\ChatMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,6 +34,7 @@ class ChatController extends Controller
             "receiver_id" => $receiver_id,
             "message"     => $request->chat,
         ]);
+        broadcast(new MessageSent($message));
         return $message;
 
     }
