@@ -1,17 +1,4 @@
-
-export const getHeader = function () {
-    const tokenData = JSON.parse(
-        window.localStorage.getItem("accessToken")
-    ).accessToken;
-    const headers = {
-        Accept: "application/json",
-        Authorization: "Bearer " + tokenData,
-    };
-
-    return headers;
-};
-
-
+import axios from 'axios';
 export function handleError(e) {
     let code = parseInt(e.response && e.response.status);
     if (code === 401 || code === 403) {
@@ -22,10 +9,9 @@ export function handleError(e) {
 
 const funcApi = {
     async fetchData(url) {
+
         try {
-            const response = await axios.get(url, {
-                headers: getHeader(),
-            });
+            const response = await axios.get(url);
             return response.data;
         } catch (error) {
             console.log(error);
@@ -35,9 +21,7 @@ const funcApi = {
     },
     async post(url, data) {
         try {
-            const response = await axios.post(url, data, {
-                headers: getHeader(),
-            });
+            const response = await axios.post(url, data);
             return response;
         } catch (error) {
             console.log(error);
@@ -47,9 +31,7 @@ const funcApi = {
     },
     async put(url, data) {
         try {
-            const response = await axios.put(url, data, {
-                headers: getHeader(),
-            });
+            const response = await axios.put(url, data);
             return response;
         } catch (error) {
             console.log(error);
@@ -57,9 +39,6 @@ const funcApi = {
             throw error;
         }
     },
-
-
-
-
 };
+
 export { funcApi };

@@ -4,7 +4,7 @@
 <script setup>
 import {  onMounted } from 'vue';
 import ChatPage from './views/Chat/ChatPage.vue'
-import { useUtils } from './composables/useUtils'; // Import your new composable
+import { useUtils } from './common/composables/useUtils'; // Import your new composable
 const { user } = useUtils();
 
 onMounted(() => {
