@@ -57,7 +57,7 @@
 import { ref, nextTick, watch, onMounted } from 'vue';
 import { useChats } from '../composables/useChats';
 
-const { user, messages, users, selectedUser } = useChats();
+const { user, messages, users, selectedUser,chatListener } = useChats();
 
 // Template refs
 const messagesContainer = ref(null);
@@ -86,6 +86,7 @@ watch(selectedUser, () => {
 
 // Scroll to bottom on component mount
 onMounted(() => {
+    chatListener();
   nextTick(() => {
     scrollToBottom();
   });

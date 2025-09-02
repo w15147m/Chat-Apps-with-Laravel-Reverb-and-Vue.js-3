@@ -24,7 +24,7 @@ export function useChats() {
         }
     };
     const getUsers = async () => {
-        chatListener();
+
         try {
             let response = await funcApi.fetchData("/api/users");
             users.value = response;
@@ -68,5 +68,6 @@ export function useChats() {
         getUsers,
         selectUser,
         sendMessage,
+             chatListener
     };
 }
