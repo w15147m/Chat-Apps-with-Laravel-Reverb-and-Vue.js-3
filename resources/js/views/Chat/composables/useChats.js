@@ -36,7 +36,8 @@ export function useChats() {
     onMounted(async () => {
         try {
             let response = await funcApi.fetchData("/api/users");
-            users.value = response.users;
+            users.value = response;
+
             if (users.value.length > 0) {
                 selectedUser.value = users.value[0];
             }
