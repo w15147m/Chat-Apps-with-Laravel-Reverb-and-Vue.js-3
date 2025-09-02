@@ -56,7 +56,6 @@ class ProfileController extends Controller
     }
     public function getUsers()
     {
-
         $users = User::where('id', '!=', Auth::id())->get();
         return $users;
     }
