@@ -1,12 +1,12 @@
 import { onMounted, ref } from "vue";
-import { useUtils } from "@/common/composables/useUtils"; // Import your new composable
+import { useUtils } from "@/common/composables/useUtils";
 import { funcApi } from "@/common/services/api.service";
+
 const { user } = useUtils();
-const users = ref([
-    { id: 2, name: "Jane Smith", email: "jane@example.com" },
-    { id: 3, name: "Peter Jones", email: "peter@example.com" },
-    { id: 4, name: "Sarah Miller", email: "sarah@example.com" },
-]);
+
+// Start with empty array since you're loading from API
+const users = ref([]);
+
 const messages = ref([
     { id: 1, sender_id: 1, message: "Hello Jane!", created_at: "10:00" },
     {
@@ -28,13 +28,22 @@ const messages = ref([
         created_at: "10:03",
     },
 ]);
-const selectedUser = ref(users.value[0]);
+
+const selectedUser = ref(null);
 
 export function useChats() {
 
     onMounted(async () => {
-        let response = await funcApi.fetchData("/api/user");
+        try {
+            let response = await funcApi.fetchData("/api/users");
+            users.value = response.users;
+            if (users.value.length > 0) {
+                selectedUser.value = users.value[0];
+            }
 
+        } catch (error) {
+            console.error('Error loading users:', error);
+        }
     });
 
     return {
