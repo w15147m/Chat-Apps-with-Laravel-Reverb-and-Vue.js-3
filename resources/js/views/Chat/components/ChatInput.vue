@@ -20,14 +20,7 @@
 import { ref } from 'vue';
 import { useChats } from '../composables/useChats';
 
-const { user, messages, users, selectedUser } = useChats();
-const newMessage = ref('');
+const { user, messages, users, selectedUser,sendMessage , newMessage} = useChats();
 
-const sendMessage = () => {
-  if (newMessage.value.trim()) {
-    // Add logic to send message
-    console.log('Sending:', newMessage.value);
-    newMessage.value = '';
-  }
-};
+
 </script>
