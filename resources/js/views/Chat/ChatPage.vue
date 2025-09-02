@@ -5,12 +5,15 @@
     <Sidebar />
     <!-- Chat Area -->
     <div class="w-3/4 flex flex-col">
-
+<ChatArea/>
+<ChatInput/>
     </div>
   </div>
 </div>
 </template>
 
 <script setup>
-import Sidebar from "./components/Sidebar.vue"
+import Sidebar from "./components/Sidebar.vue";
+import ChatArea from "./components/ChatArea.vue";
+import ChatInput from "./components/ChatInput.vue"
 </script>

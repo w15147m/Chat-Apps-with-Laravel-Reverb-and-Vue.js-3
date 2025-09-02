@@ -13,7 +13,10 @@
 </template>
 
 <script setup>
-
+import { ref } from 'vue';
+import { useChats } from '../composables/useChats';
+const { user , messages, users, selectedUser} = useChats();
+const newMessage = ref('');
 </script>
 
 <style lang="scss" scoped>
