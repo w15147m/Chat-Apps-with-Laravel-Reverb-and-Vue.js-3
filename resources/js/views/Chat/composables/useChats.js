@@ -8,8 +8,26 @@ const users = ref([]);
 const newMessage = ref("");
 const messages = ref([]);
 const selectedUser = ref(null);
+const inviteEmail = ref(null);
+
 
 export function useChats() {
+    const handleSendInvitation = async () => {
+        if (!inviteEmail.value) return;
+       try {
+            let response = await funcApi.post(
+                `/api/invite`,
+                { email: inviteEmail.value }
+            );
+            messages.value.push(response.data);
+            newMessage.value = "";
+        } catch (error) {
+            console.error("Error loading users:", error);
+        }
+
+
+    };
+
     const sendMessage = async () => {
         if (!newMessage.value) return;
         try {
@@ -24,7 +42,6 @@ export function useChats() {
         }
     };
     const getUsers = async () => {
-
         try {
             let response = await funcApi.fetchData("/api/users");
             users.value = response;
@@ -53,7 +70,7 @@ export function useChats() {
             window.Echo.private(`chat.${userId}`).listen(
                 "MessageSent",
                 (data) => {
-                        messages.value.push(data);
+                    messages.value.push(data);
                 }
             );
         }
@@ -64,10 +81,12 @@ export function useChats() {
         selectedUser,
         newMessage,
         messages,
+        inviteEmail,
         // functions
         getUsers,
         selectUser,
         sendMessage,
-             chatListener
+        chatListener,
+        handleSendInvitation,
     };
 }
